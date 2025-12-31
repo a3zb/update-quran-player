@@ -1,0 +1,2979 @@
+body,
+[lang="ar"],
+[lang="ar"] *,
+.arabic,
+.arabic *,
+.song-title,
+.singer-name,
+.lyric-line,
+.lyrics-container,
+.surah-title,
+.surah-number,
+.reciter-name,
+.verse-number,
+.verse-text,
+.ayah-text,
+.quran-text {
+    font-family: 'Noto Naskh Arabic', 'Amiri', serif !important;
+    font-size: 1.15rem;
+    line-height: 2.2;
+    letter-spacing: 0;
+}
+
+.lyric-line {
+    font-family: 'Noto Naskh Arabic', serif !important;
+    font-size: 1.5em;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.2s ease-in-out;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 8px 0;
+    cursor: pointer;
+    display: block;
+}
+
+.lyric-line.highlight {
+    color: #fff;
+    font-size: 1.8em;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Keep the original font for non-Arabic text */
+body:not([lang="ar"]) {
+    font-family: 'Inter', sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
+}
+
+body {
+    background-color: #210033;
+    /* Latar belakang default untuk home page */
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    /* Untuk memusatkan konten utama */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-block-size: 100vh;
+    overflow-x: hidden;
+    /* Mencegah scroll horizontal */
+    transition: background-color 0.5s ease-in-out;
+    /* Transisi untuk background-color */
+    position: relative;
+    /* Penting untuk posisi video background */
+    z-index: 1;
+    /* Pastikan konten utama di atas video */
+}
+
+/* Right-side vertical action bar */
+.right-action-bar {
+    position: fixed;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Latar belakang ketika halaman pemutar musik aktif */
+body.player-active-bg {
+    /* Background ini akan tetap ada, tapi video akan berada di belakangnya */
+    background-color: #1a002c;
+}
+
+/* Latar belakang ketika halaman detail lagu aktif */
+body.detail-active-bg {
+    background-color: #331A40;
+    /* Warna yang berbeda untuk halaman detail */
+}
+
+/* Video Background Styles */
+.video-background-container {
+    position: fixed;
+    /* Tetap di viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    /* Berada di belakang konten utama */
+    opacity: 0;
+    /* Sembunyikan secara default */
+    transition: opacity 0.7s ease-in-out;
+    /* Transisi untuk muncul/hilang */
+}
+
+.video-background-container.active {
+    opacity: 1;
+    /* Tampilkan ketika aktif */
+}
+
+.video-background-container video {
+    min-width: 100%;
+    min-height: 100%;
+    min-inline-size: 100%;
+    min-block-size: 100%;
+    width: auto;
+    height: auto;
+    inline-size: auto;
+    block-size: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    /* Memastikan video mengisi kontainer */
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Overlay gelap untuk teks */
+    z-index: 1;
+    /* Di atas video, di bawah konten */
+}
+
+/* Gaya Umum Halaman */
+.page {
+    width: 100%;
+    inline-size: 100%;
+    max-width: 800px;
+    max-inline-size: 800px;
+    /* Lebar maksimum untuk konten utama */
+    padding: 1rem;
+    display: none;
+    /* Semua halaman disembunyikan secara default */
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    position: relative;
+    /* Penting untuk z-index di atas video */
+    z-index: 2;
+    /* Pastikan page selalu di atas overlay dan video */
+    background-color: transparent;
+    /* Pastikan halaman itu sendiri transparan agar video terlihat */
+}
+
+.page.active {
+    display: flex;
+    /* Hanya halaman aktif yang ditampilkan */
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    color: #ffffff;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Home Page Styles (Daftar Lagu) */
+.song-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 600px;
+    /* Lebar daftar lagu */
+}
+
+.song-list li {
+    background-color: #380056;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.song-list li:hover {
+    background-color: #8a5cf647;
+    transform: translateY(-2px);
+}
+
+.song-list .song-art-list {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    margin-inline-end: 1rem;
+    object-fit: cover;
+}
+
+.song-list .song-info-list h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.song-list .song-info-list p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #b3b3b3;
+}
+
+.loading-songs {
+    text-align: center;
+    color: #a0a0a0;
+    font-style: italic;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    cursor: default !important;
+    /* Nonaktifkan cursor pointer */
+}
+
+.loading-songs:hover {
+    background-color: transparent !important;
+    transform: none !important;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+}
+
+.search-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.5);
+}
+
+.search-input::placeholder {
+    color: #a0a0a0;
+}
+
+/* Search options */
+/* تنسيق زر دعاء الختمة */
+.dua-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem auto;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Amiri', serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dua-btn:hover {
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dua-btn i {
+    font-size: 1.2em;
+}
+
+.search-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* تنسيق زر دعاء الختمة */
+.dua-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem auto;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Amiri', serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dua-btn:hover {
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dua-btn i {
+    font-size: 1.2em;
+}
+
+/* Favorites-only toggle pill */
+.favorites-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+.favorites-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.favorites-toggle:hover {
+    color: #ffffff;
+    background-color: rgba(138, 43, 226, 0.3);
+}
+
+.favorites-toggle input[type="checkbox"]:checked+span {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.favorites-toggle span i {
+    color: #ff6f91;
+    /* heart tone */
+}
+
+.secondary-controls-player {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Make volume control a positioned container for the popover */
+.volume-control-player {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Small control variant */
+.control-btn-player.small-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.control-btn-player.small-icon:hover {
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.control-btn-player.small-icon:active {
+    transform: scale(0.96);
+}
+
+/* Volume popover */
+.volume-popover {
+    position: absolute;
+    right: 0;
+    bottom: 48px;
+    padding: 10px 12px;
+    background: rgba(25, 8, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    display: none;
+    z-index: 5;
+    backdrop-filter: blur(6px);
+}
+
+.volume-popover.show {
+    display: block;
+}
+
+/* Sleep timer popover */
+.sleep-control-player {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sleep-popover {
+    position: absolute;
+    right: 0;
+    bottom: 48px;
+    padding: 12px;
+    background: rgba(25, 8, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    display: none;
+    z-index: 5;
+    min-width: 200px;
+    color: #e0e0e0;
+}
+
+.sleep-popover.show {
+    display: block;
+}
+
+.sleep-title {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #cfc2ff;
+}
+
+.sleep-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.sleep-option {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sleep-option:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.sleep-cancel {
+    width: 100%;
+    background: transparent;
+    color: #ff9aa2;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sleep-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sleep-remaining {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #a0ffa0;
+    text-align: center;
+}
+
+/* Bookmarks panel */
+.bookmarks-panel {
+    margin-top: 0.75rem;
+    background: radial-gradient(circle at top left, rgba(46, 0, 77, 0.35), rgba(26, 0, 44, 0.25));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.bookmarks-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #e0e0e0;
+}
+
+.bookmarks-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bookmark-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.bookmark-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bookmark-time {
+    font-weight: 600;
+    color: #cfc2ff;
+}
+
+.bookmark-text {
+    color: #cfcfcf;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.bookmark-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bookmark-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.bookmark-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+/* Vertical volume slider */
+.volume-slider-vertical {
+    height: 140px;
+    width: 6px;
+    writing-mode: bt-lr;
+    /* IE/Edge */
+    -webkit-appearance: slider-vertical;
+    /* Safari */
+    appearance: none;
+    /* Standard */
+}
+
+/* Slider track/thumb styling (cross-browser basics) */
+.volume-slider-vertical::-webkit-slider-runnable-track {
+    width: 6px;
+    background: linear-gradient(180deg, #8a2be2 0%, #4b0082 100%);
+    border-radius: 6px;
+}
+
+.volume-slider-vertical::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #8a2be2;
+    margin-top: -4px;
+}
+
+.volume-slider-vertical::-moz-range-track {
+    width: 6px;
+    background: linear-gradient(180deg, #8a2be2 0%, #4b0082 100%);
+    border-radius: 6px;
+}
+
+.volume-slider-vertical::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #8a2be2;
+}
+
+.search-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-option:hover {
+    color: #ffffff;
+    background-color: rgba(138, 43, 226, 0.3);
+}
+
+.search-option input[type="radio"] {
+    display: none;
+}
+
+.search-option input[type="radio"]:checked+span {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.search-option input[type="radio"]:checked+span::before {
+    content: '• ';
+}
+
+/* Highlighted text in search results */
+.highlight,
+.search-highlight {
+    background: linear-gradient(120deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.4) 100%);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* Matching verses in search results */
+.matching-verses {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #a855f7;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95em;
+    color: #d1d5db;
+    backdrop-filter: blur(4px);
+}
+
+.matching-verse {
+    margin: 6px 0;
+    line-height: 1.6;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.matching-verse:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateX(-5px);
+    color: #fff;
+}
+
+.more-verses {
+    font-style: normal;
+    font-weight: 600;
+    color: #a855f7;
+    font-size: 0.85em;
+    margin-top: 8px;
+    padding-left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.more-verses::before {
+    content: '•';
+    font-size: 1.2em;
+}
+
+/* Search Results Animation */
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.song-list li {
+    animation: resultFadeIn 0.3s ease forwards;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.8rem 1.2rem;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* تنسيقات دعاء الختمة */
+.dua-header {
+    font-size: 2.5em;
+    color: #2c7be5;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dua-text {
+    font-size: 1.5em;
+    color: #2c3e50;
+    text-align: center;
+    margin: 15px 0;
+    line-height: 1.8;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.dua-text:hover {
+    background-color: rgba(44, 123, 229, 0.1);
+    transform: scale(1.02);
+}
+
+/* إخفاء عناصر التشغيل عند عرض الدعاء */
+.show-video-only .player-controls,
+.show-video-only .progress-container,
+.show-video-only .volume-container {
+    display: none !important;
+}
+
+/* تكبير حجم النص في حالة عرض الدعاء */
+.show-video-only .lyrics-container {
+    font-size: 1.2em;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Add any additional styles below */
+.back-btn {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background-color: #3800563a;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    z-index: 1100;
+    transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #380056;
+    /* Warna ungu saat hover */
+}
+
+.back-btn i {
+    margin-right: 0.5rem;
+}
+
+/* Music Player Container */
+.music-player-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    height: 50%;
+    min-height: 90vh;
+    /* Agar player box bisa di tengah secara vertikal */
+    padding-top: 3rem;
+    /* Ruang untuk tombol kembali */
+}
+
+.music-player-box {
+    background: radial-gradient(circle at top left, #2e004d3b, #1a002c3a);
+    /* Warna box player */
+    border-radius: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    /* Lebar box player */
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+}
+
+.album-art-player {
+    width: 80px;
+    /* Ukuran gambar album di player */
+    height: 80px;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    margin-inline-end: 1rem;
+}
+
+.track-info-player h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.track-info-player .second-artist {
+    margin: 2px 0 0 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    direction: rtl;
+    font-style: italic;
+}
+
+.track-info-player p {
+    font-size: 0.9rem;
+    color: #b3b3b3;
+    margin: 0;
+}
+
+.lyrics-container {
+    height: 180px;
+    /* Tinggi area lirik */
+    overflow-y: auto;
+    background: radial-gradient(circle at top left, #2e004d43, #1a002c3d);
+    /* Latar lirik sedikit beda */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #d0d0d0;
+    /* white-space: pre-wrap; */
+    /* Hapus ini jika ingin lyric-line display: block */
+}
+
+/* Custom Scrollbar untuk Lirik */
+.lyrics-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lyrics-container::-webkit-scrollbar-track {
+    background: #282828;
+    border-radius: 10px;
+}
+
+.lyrics-container::-webkit-scrollbar-thumb {
+    background: #380056;
+    border-radius: 10px;
+}
+
+.lyrics-container::-webkit-scrollbar-thumb:hover {
+    background: #5a5a6e;
+}
+
+
+.player-controls {
+    margin-top: auto;
+    /* Mendorong kontrol ke bawah jika ada ruang */
+}
+
+.progress-section-player {
+    margin-bottom: 1rem;
+}
+
+.progress-bar-container-player {
+    background-color: #404040;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 10px;
+    /* Tinggi progress bar */
+    width: 100%;
+}
+
+.progress-bar-player {
+    background-color: #380056;
+    /* Warna  untuk progress */
+    width: 0%;
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.1s linear;
+    /* Transisi halus saat update */
+}
+
+.time-display-player {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin-top: 0.5rem;
+}
+
+.main-controls-player {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.control-btn-player {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1.6rem;
+    /* Ukuran ikon tombol utama */
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.1s ease;
+    padding: 0.5rem;
+}
+
+.control-btn-player:hover {
+    color: #380056;
+    transform: scale(1.1);
+}
+
+.control-btn-player.play-pause-player {
+    font-size: 2.2rem;
+    /* Tombol play/pause lebih besar */
+    color: #380056;
+}
+
+.control-btn-player.play-pause-player:hover {
+    color: #380056;
+}
+
+.control-btn-player.active-feature {
+    color: #380056 !important;
+    /* Warna aktif untuk shuffle/repeat */
+}
+
+
+.secondary-controls-player {
+    display: flex;
+    justify-content: space-between;
+    /* Menyebar tombol dan volume */
+    align-items: center;
+    padding: 0 0.5rem;
+    /* Sedikit padding horizontal */
+    width: 100%;
+    /* Pastikan mengambil lebar penuh */
+    flex-wrap: wrap;
+    /* Izinkan wrap jika layar terlalu kecil */
+    gap: 1rem;
+    /* Jarak antar item kontrol */
+}
+
+.control-btn-player.skip-btn {
+    position: relative;
+    font-size: 1.2rem;
+}
+
+.control-btn-player.skip-btn span {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #fff;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.control-btn-player.secondary {
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+.control-btn-player.small-icon {
+    font-size: 1.2rem;
+    /* Ukuran ikon lebih kecil untuk shuffle/repeat */
+}
+
+.volume-control-player,
+.playback-speed-control {
+    display: flex;
+    align-items: center;
+}
+
+.volume-icon-player,
+.speed-icon {
+    color: #380056;
+    font-size: 0.9rem;
+    /* Ukuran ikon volume/kecepatan */
+}
+
+.volume-icon-player.ml-1 {
+    margin-left: 0.25rem;
+}
+
+
+.volume-slider-player,
+.speed-slider {
+    width: 80px;
+    /* Lebar slider */
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #404040;
+    border-radius: 3px;
+    outline: none;
+    opacity: 0.8;
+    transition: opacity .2s;
+    margin: 0 0.5rem;
+}
+
+.volume-slider-player:hover,
+.speed-slider:hover {
+    opacity: 1;
+}
+
+.volume-slider-player::-webkit-slider-thumb,
+.speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.volume-slider-player::-moz-range-thumb,
+.speed-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Style untuk tampilan kecepatan */
+#currentSpeedDisplay {
+    font-size: 0.85rem;
+    color: #380056;
+    min-width: 35px;
+    /* Agar tidak goyang saat nilai berubah */
+    text-align: right;
+}
+
+
+.footer-credit {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #707070;
+    margin-top: 1.5rem;
+}
+
+/* New styles for Song Detail Page */
+.song-detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle at top left, #40205e, #2a103c02);
+    /* Warna latar belakang detail page */
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 2rem 1rem;
+    gap: 2rem;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 5rem;
+    /* Beri ruang untuk tombol kembali */
+}
+
+.song-detail-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.detail-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+.detail-volume-slider {
+    flex: 1;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #3a3a4e;
+    border-radius: 4px;
+    outline: none;
+    transition: background 0.3s ease;
+}
+
+.detail-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.detail-volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.detail-volume-value {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.detail-album-art {
+    width: 180px;
+    height: 180px;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.song-detail-container h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #ffffff;
+}
+
+.song-detail-container p {
+    font-size: 1.1rem;
+    color: #b3b3b3;
+    margin: 0.2rem 0;
+}
+
+.play-from-detail-btn {
+    background-color: #8b5cf6;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-from-detail-btn:hover {
+    background-color: #a78bfa;
+    transform: translateY(-2px);
+}
+
+.play-from-detail-btn i {
+    margin-right: 0.75rem;
+    font-size: 1.3rem;
+}
+
+/* Responsif */
+@media (max-width: 100px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .song-list li {
+        padding: 0.8rem 1rem;
+    }
+
+    .song-list .song-info-list h3 {
+        font-size: 1rem;
+    }
+
+    .music-player-box {
+        max-width: 95%;
+        padding: 1rem;
+    }
+
+    .player-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .album-art-player {
+        width: 100px;
+        height: 100px;
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .track-info-player h2 {
+        font-size: 1.2rem;
+    }
+
+    .lyrics-container {
+        height: 150px;
+        font-size: 0.9rem;
+    }
+
+    .control-btn-player {
+        font-size: 1.4rem;
+    }
+
+    .control-btn-player.play-pause-player {
+        font-size: 2rem;
+    }
+
+    /* Responsif untuk Detail Page */
+    .song-detail-container {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .detail-album-art {
+        width: 150px;
+        height: 150px;
+    }
+
+    .song-detail-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .song-detail-container p {
+        font-size: 1rem;
+    }
+
+    .play-from-detail-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .secondary-controls-player {
+        flex-direction: flex;
+        /* Tumpuk kontrol sekunder di layar kecil */
+        gap: 0.8rem;
+    }
+
+    .volume-control-player,
+    .playback-speed-control {
+        width: 100%;
+        /* Ambil lebar penuh */
+        justify-content: center;
+        /* Pusatkan item */
+    }
+}
+
+/* Styles for Lyric Highlighting */
+.lyric-line {
+    color: rgba(255, 255, 255, 0.4);
+    /* Default: agak pudar */
+    transition: color 0.3s ease;
+    /* Transisi halus saat warna berubah */
+    display: block;
+    /* Penting: Setiap lirik di baris baru */
+    margin-bottom: 0.2em;
+    /* Sedikit spasi antar baris lirik */
+}
+
+.lyric-line.highlight {
+    color: #FFFFFF;
+    /* Highlight: putih penuh */
+    font-weight: 600;
+    /* Opsional: buat teks lebih tebal saat di-highlight */
+}
+
+/* Contact and Help Icons */
+.contact-icon {
+    display: none !important;
+    /* hidden in favor of right-action-bar */
+}
+
+.contact-icon i {
+    display: none;
+}
+
+.contact-icon i:hover {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.contact-tooltip {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    width: 280px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: right;
+    direction: rtl;
+}
+
+.contact-icon:hover .contact-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.contact-tooltip h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #8b5cf6;
+}
+
+.contact-tooltip p {
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+}
+
+.contact-tooltip ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact-tooltip li {
+    margin: 8px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+}
+
+.contact-tooltip li:last-child {
+    border-bottom: none;
+}
+
+/* زر إغلاق التلميحات */
+.close-tooltip {
+    background: #8b5cf6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.close-tooltip:hover {
+    background: #7c4dff;
+}
+
+/* حالة التلميح النشط */
+.contact-tooltip.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1001;
+}
+
+/* Contact Content Section */
+.contact-content {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contact-content.active {
+    display: flex;
+    opacity: 1;
+}
+
+.contact-content-inner {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.contact-content h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.contact-text {
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+.contact-text p {
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    text-align: center;
+}
+
+.social-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.social-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 80px;
+}
+
+.social-link i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+}
+
+.social-link span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Social Media Brand Colors */
+.social-link.telegram {
+    background: linear-gradient(45deg, #0088cc, #34b7f1, #0088cc);
+    background-size: 200% 200%;
+    animation: telegramGradient 3s ease infinite;
+}
+
+.social-link.whatsapp {
+    background: linear-gradient(45deg, #25D366, #128C7E, #075E54);
+    background-size: 200% 200%;
+    animation: whatsappGradient 3s ease infinite;
+}
+
+.social-link.facebook {
+    background: linear-gradient(45deg, #1877F2, #0D47A1, #1877F2);
+    background-size: 200% 200%;
+    animation: facebookGradient 3s ease infinite;
+}
+
+.social-link.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    background-size: 200% 200%;
+    animation: instagramGradient 3s ease infinite;
+}
+
+.social-link.youtube {
+    background: linear-gradient(45deg, #FF0000, #FF0000, #282828, #282828);
+    background-size: 200% 200%;
+    animation: youtubeGradient 3s ease infinite;
+}
+
+.social-link.tiktok {
+    background: linear-gradient(45deg, #25F4EE, #000000, #FE2C55);
+    background-size: 200% 200%;
+    animation: tiktokGradient 3s ease infinite;
+}
+
+.social-link.email {
+    background: linear-gradient(45deg, #4a90e2, #8e44ad, #e74c3c);
+    background-size: 200% 200%;
+    animation: emailGradient 3s ease infinite;
+}
+
+@keyframes instagramGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes youtubeGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes tiktokGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes emailGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes telegramGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes whatsappGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes facebookGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Top Navigation Bar */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(33, 0, 51, 0.4);
+    backdrop-filter: blur(15px);
+    z-index: 1001;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+}
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    transition: transform 0.2s ease;
+}
+
+.menu-btn:hover {
+    transform: scale(1.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+/* Side Menu / Drawer */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    /* Hidden by default */
+    width: 300px;
+    height: 100%;
+    background: rgba(26, 0, 44, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 2000;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.side-menu.active {
+    right: 0;
+}
+
+.side-menu-content {
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.close-menu {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.menu-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.menu-item:hover,
+.menu-item.active,
+.menu-item.active-filter {
+    background: rgba(168, 85, 247, 0.2);
+    color: #fff;
+    transform: translateX(-10px);
+}
+
+.menu-item.active-filter i {
+    color: #f87171;
+    /* Highlight heart icon when filter is ON */
+}
+
+.menu-footer {
+    margin-top: auto;
+    text-align: center;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #a855f7;
+}
+
+/* Reading Page Styles */
+.reading-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 2rem;
+    padding: 10px 0;
+}
+
+.reading-container {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 2rem;
+    min-height: 60vh;
+}
+
+.reading-content-area {
+    font-family: 'Noto Naskh Arabic', serif !important;
+    font-size: 2.2rem;
+    line-height: 2.5;
+    text-align: center;
+    color: #e5e7eb;
+}
+
+.verse-item {
+    margin-bottom: 1.5rem;
+    padding: 15px;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.verse-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.verse-num-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border: 1px solid #a855f7;
+    border-radius: 50%;
+    font-size: 1rem;
+    margin-right: 15px;
+    color: #a855f7;
+    vertical-align: middle;
+}
+
+.reading-footer {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.nav-reading-btn {
+    padding: 12px 25px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    transition: all 0.3s ease;
+}
+
+.nav-reading-btn:hover {
+    background: rgba(168, 85, 247, 0.3);
+    transform: scale(1.05);
+}
+
+/* Adjust main homePage for Top Nav */
+#homePage {
+    padding-top: 80px !important;
+}
+
+/* Overlay for side menu */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    display: none;
+}
+
+.menu-overlay.active {
+    display: block;
+}
+
+.social-link:hover i {
+    transform: scale(1.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .social-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .social-link {
+        padding: 12px 5px;
+        min-height: 70px;
+    }
+
+    .social-link i {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .social-link span {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        grid-template-columns: 1fr;
+    }
+
+    .social-link {
+        padding: 10px;
+        min-height: 60px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .social-link i {
+        margin-right: 10px;
+        margin-bottom: 0;
+        font-size: 18px;
+    }
+
+    .social-link:hover {
+        transform: translateX(5px);
+    }
+}
+
+.contact-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact-links li {
+    margin-bottom: 1.25rem;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.contact-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-color);
+    transform: translateX(5px);
+}
+
+.contact-link i {
+    margin-left: 10px;
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+.close-contact {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.25rem;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-contact:hover {
+    color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+/* Help Icon Styles */
+.help-icon {
+    display: none !important;
+    /* Hidden in favor of right-action-bar */
+}
+
+.help-icon:hover {
+    color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.help-icon:active,
+.help-icon.active {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+    transform: scale(0.95);
+}
+
+/* Help Content Section */
+.help-content {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.help-content.active {
+    display: flex;
+    opacity: 1;
+}
+
+.help-content-inner {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.help-content h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.help-text {
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+.help-text p {
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+}
+
+.help-text ul {
+    padding-right: 1.5rem;
+    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
+}
+
+.help-text li {
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.help-text li:before {
+    content: '•';
+    color: var(--accent-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.5em;
+}
+
+.close-help {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.25rem;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-help:hover {
+    color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+/* Resume Prompt Styles */
+.resume-prompt {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 500px;
+    animation: fadeInDown 0.5s ease;
+}
+
+.resume-content {
+    text-align: center;
+}
+
+.resume-content p {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.resume-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.resume-btn {
+    padding: 8px 25px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.resume-btn.yes {
+    background: #a855f7;
+    color: white;
+}
+
+.resume-btn.no {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+}
+
+.resume-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Download Button States */
+#downloadSurahBtn.downloading {
+    color: #a855f7;
+    pointer-events: none;
+}
+
+#downloadSurahBtn.downloaded {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+.fav-icon-list {
+    color: #ff6f91;
+    font-size: 0.9rem;
+    margin-left: 8px;
+    filter: drop-shadow(0 0 5px rgba(255, 111, 145, 0.4));
+}
+
+/* Khatmah Planner Styles */
+.khatmah-planner-card {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease;
+}
+
+.planner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.planner-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-small {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.progress-container-mini {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar-mini {
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7, #6366f1);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    transition: width 0.5s ease;
+}
+
+.khatmah-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    backdrop-filter: blur(10px);
+}
+
+.khatmah-modal-content {
+    background: #1a002c;
+    padding: 30px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.khatmah-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.khatmah-opt {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.khatmah-opt:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: #a855f7;
+    transform: translateY(-3px);
+}
+
+.custom-khatmah {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.custom-khatmah input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    color: #fff;
+    border-radius: 8px;
+}
+
+.khatmah-day-badge {
+    background: #a855f7;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.done-btn-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.khatmah-done-btn {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+    transition: all 0.3s ease;
+}
+
+.khatmah-done-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(34, 197, 94, 0.5);
+}
+
+.khatmah-done-btn i {
+    margin-left: 10px;
+}
+
+
+
+
+
+.daily-target-info {
+    font-size: 1.1rem;
+    color: #cfc2ff;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(168, 85, 247, 0.1);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.custom-khatmah button {
+    background: #a855f7;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.close-modal-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #aaa;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* Verse Reading Progress */
+.verse-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+}
+
+.verse-item:hover {
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.verse-item.read {
+    opacity: 0.6;
+    background: rgba(34, 197, 94, 0.05);
+    border-color: rgba(34, 197, 94, 0.1);
+}
+
+.verse-item.read .verse-num-badge {
+    background: #22c55e;
+    color: white;
+}
+
+.verse-item.read .verse-text {
+    color: #a1a1aa;
+    text-decoration: line-through;
+    text-decoration-color: rgba(34, 197, 94, 0.4);
+}
+
+.last-read-marker {
+    border: 1px solid #a855f7 !important;
+    background: rgba(168, 85, 247, 0.1) !important;
+    position: relative;
+}
+
+.last-read-marker::after {
+    content: "وصلت هنا";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #a855f7;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* Streak Badge */
+.streak-badge {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.streak-badge i {
+    color: #ef4444;
+    filter: drop-shadow(0 0 5px #ef4444);
+}
+
+/* Reading Settings Bar */
+.reading-settings-bar {
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto 20px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.font-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.font-controls button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-controls button:hover {
+    background: #a855f7;
+}
+
+#fontSizeDisplay {
+    font-size: 0.9rem;
+    font-weight: bold;
+    min-width: 45px;
+    text-align: center;
+}
+
+.theme-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-opt {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-opt.default {
+    background: #1a002c;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-opt.sepia {
+    background: #f4ecd8;
+    border-color: #d2c19a;
+}
+
+.theme-opt.night {
+    background: #000;
+    border-color: #333;
+}
+
+.theme-opt.active {
+    border-color: #a855f7;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px #a855f7;
+}
+
+/* Reading Themes */
+.reading-container.sepia {
+    background: #f4ecd8 !important;
+}
+
+.reading-container.sepia .verse-text {
+    color: #433422 !important;
+}
+
+.reading-container.sepia .verse-num-badge {
+    background: #433422 !important;
+    color: #f4ecd8 !important;
+}
+
+.reading-container.sepia .surah-separator {
+    color: #7b5e3d !important;
+}
+
+.reading-container.night {
+    background: #000 !important;
+}
+
+.reading-container.night .verse-text {
+    color: #ddd !important;
+}
+
+.reading-container.night .verse-num-badge {
+    background: #333 !important;
+    color: #fff !important;
+}
+
+/* Settings Page Styles */
+.settings-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settings-group {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.settings-group h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #a855f7;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    padding-bottom: 8px;
+}
+
+.settings-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.settings-btn:last-child {
+    margin-bottom: 0;
+}
+
+.settings-btn:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateX(-5px);
+}
+
+.settings-btn i {
+    font-size: 1.2rem;
+    color: #a855f7;
+    width: 25px;
+}
+
+/* Sync Mode Styles */
+.sync-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.sync-header-info {
+    margin-bottom: 30px;
+}
+
+.sync-status {
+    font-size: 1.2rem;
+    color: #a855f7;
+    margin-top: 10px;
+}
+
+.sync-controls {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.sync-playback-tools {
+    display: flex;
+    gap: 15px;
+}
+
+.sync-tool-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.sync-tool-btn:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.4);
+    transform: translateY(-3px);
+}
+
+.sync-mark-btn {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #6b21a8);
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+    transition: all 0.2s ease;
+    margin: 0 auto;
+}
+
+.sync-mark-btn:active {
+    transform: scale(0.92);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+}
+
+.sync-mark-btn i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.sync-mark-btn span {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.sync-mark-btn small {
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.sync-preview {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sync-box {
+    padding: 15px;
+    border-radius: 12px;
+    text-align: right;
+}
+
+.sync-box small {
+    display: block;
+    color: #a855f7;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+}
+
+.sync-box.current {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.sync-box.next {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.sync-verse-text {
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: #fff;
+}
+
+.sync-next-verse-text {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sync-actions-extra {
+    margin-bottom: 30px;
+}
+
+.sync-secondary-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ffd6d6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sync-secondary-btn:hover {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+.sync-output {
+    width: 100%;
+    height: 200px;
+    background: #1a002c;
+    color: #22c55e;
+    border: 1px solid #a855f7;
+    border-radius: 10px;
+    padding: 15px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    margin: 20px 0;
+    direction: ltr;
+    text-align: left;
+}
+
+.sync-instructions {
+    text-align: right;
+    background: rgba(168, 85, 247, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sync-instructions ul {
+    margin: 5px 0 0 0;
+    padding-right: 20px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Player Navigation & Lyrics Header Styles */
+.player-header-nav {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.close-player-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(5px);
+}
+
+.close-player-btn:hover {
+    background: rgba(239, 68, 68, 0.5);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: rotate(90deg) scale(1.1);
+}
+
+.player-lyrics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0 10px;
+    padding: 0 5px;
+}
+
+.player-lyrics-header h3 {
+    font-size: 1rem;
+    color: #a855f7;
+    margin: 0;
+    font-weight: 500;
+}
+
+.lyrics-font-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 15px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.lyrics-font-controls button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.lyrics-font-controls button:hover {
+    color: #a855f7;
+    transform: scale(1.3);
+}
+
+.lyrics-font-controls span {
+    font-size: 0.85rem;
+    min-width: 45px;
+    text-align: center;
+    font-weight: bold;
+    color: #a855f7;
+}
+
+.lyrics-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    text-align: center;
+    font-family: 'Amiri', serif;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
